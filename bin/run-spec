@@ -1,0 +1,31 @@
+#!/usr/bin/env raku
+
+# Runs one behave spec in-process
+
+use BDD::Behave::Runner;
+use BDD::Behave::SpecRegistry;
+use BDD::Behave::SpecLoader;
+use BDD::Behave::Formatter::Registry;
+
+sub MAIN(Str $spec) {
+  my $file      = $spec.IO;
+  my $formatter = BDD::Behave::Formatter::Registry.create('progress');
+
+  my Bool $passed = False;
+
+  {
+    my $*OUT = open('/dev/null', :w);
+    my $*BEHAVE-TOP-LEVEL-RUN = True;
+
+    try {
+      BDD::Behave::SpecLoader::load-spec-file($file);
+
+      my $suite = BDD::Behave::SpecRegistry::registry().suite-for-file($file);
+      $passed = BDD::Behave::Runner::Runner.new(:$formatter).run($suite).failed == 0;
+    }
+
+    $*OUT.close;
+  }
+
+  exit($passed ?? 0 !! 1);
+}

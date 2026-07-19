@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Raku
+        uses: Raku/setup-raku@v1
+
+      - name: Install behave
+        run: |
+          retry() {
+            local n=0
+            until "$@"; do
+              n=$((n + 1))
+              if [ "$n" -ge 3 ]; then echo "giving up after $n attempts: $*"; return 1; fi
+              echo "retry $n/3: $*"
+              sleep 5
+            done
+          }
+          retry zef install --/test --force-install https://github.com/gdonald/BDD-Behave.git
+
+      - name: Check exercises
+        run: raku bin/check

@@ -1,0 +1,115 @@
+#!/usr/bin/env raku
+
+# Quality check for exercises
+#
+# Run from the repository root:
+#
+#   raku bin/check                              # check every exercise
+#   raku bin/check 0010-scalars/0010-greeting   # check one exercise
+
+my $out = $*OUT;
+$out.out-buffer = False;
+
+my $repo      = $*CWD;
+my $exercises = $repo.add('exercises');
+my $solutions = $repo.add('solutions');
+my $run-spec  = $*PROGRAM.parent.add('run-spec').absolute;
+
+my $jobs = (%*ENV<CHECK_JOBS> // max(2, ($*KERNEL.cpu-cores // 2) - 2)).Int;
+
+class Result {
+  has Str  $.rel;
+  has Bool $.ok;
+  has Str  @.reasons;
+}
+
+sub spec-passes(IO::Path $lib, IO::Path $spec --> Bool) {
+  my %env = %*ENV;
+  %env<RAKULIB> = $lib.absolute ~ (%*ENV<RAKULIB> ?? ',' ~ %*ENV<RAKULIB> !! '');
+
+  my $proc = Proc::Async.new('raku', $run-spec, $spec.absolute);
+
+  $proc.stdout.tap: -> $ {};
+  $proc.stderr.tap: -> $ {};
+
+  (await $proc.start(ENV => %env)).exitcode == 0;
+}
+
+sub exercise-dirs(IO::Path $root) {
+  gather for $root.dir.sort -> $entry {
+    next unless $entry.d;
+
+    if $entry.add('spec.raku').e {
+      take $entry;
+    } else {
+      take $_ for exercise-dirs($entry);
+    }
+  }
+}
+
+sub check-one(IO::Path $dir --> Result) {
+  my $rel      = $dir.relative($exercises).Str;
+  my $spec     = $dir.add('spec.raku');
+  my $stub     = $dir.add('Exercise.rakumod');
+  my $readme   = $dir.add('README.md');
+  my $solution = $solutions.add($rel).add('Exercise.rakumod');
+
+  my Str @reasons;
+
+  return Result.new(:$rel, :!ok, reasons => ['missing spec.raku'])
+  unless $spec.e;
+
+  @reasons.push: 'missing README.md'          unless $readme.e;
+  @reasons.push: 'missing Exercise.rakumod'   unless $stub.e;
+  @reasons.push: "missing solutions/$rel/Exercise.rakumod" unless $solution.e;
+
+  return Result.new(:$rel, :!ok, :@reasons) if @reasons;
+
+  @reasons.push: 'the starting Exercise.rakumod already passes spec.raku; it must not solve the exercise'
+  if spec-passes($dir, $spec);
+
+  @reasons.push: 'the solution does not pass spec.raku'
+  unless spec-passes($solution.parent, $spec);
+
+  Result.new(:$rel, ok => !@reasons, :@reasons);
+}
+
+unless $exercises.d {
+  note "No exercises/ directory here. Run this from the repository root.";
+  exit 2;
+}
+
+sub target-dir(Str $arg) {
+  $exercises.add($arg.subst(/^ [ '.' '/' ]? 'exercises' '/' /, ''));
+}
+
+my @targets = @*ARGS
+?? @*ARGS.map({ target-dir($_) })
+!! exercise-dirs($exercises);
+
+my $lock = Lock.new;
+
+my Result @results = @targets.hyper(:degree($jobs), :batch(1)).map(-> $dir {
+    my $result = check-one($dir);
+
+    $lock.protect: { $out.print($result.ok ?? '.' !! 'F') }
+
+    $result;
+}).list;
+
+say '';
+
+my Result @failures = @results.grep(!*.ok);
+
+if @failures {
+  say '';
+  for @failures -> $result {
+    say "FAIL  {$result.rel}";
+    say "      $_" for $result.reasons;
+  }
+  say '';
+  say "{@failures.elems} exercise(s) failed the check.";
+  exit 1;
+}
+
+say 'All exercises passed the check.';

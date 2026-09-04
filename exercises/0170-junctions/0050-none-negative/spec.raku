@@ -2,11 +2,11 @@ use BDD::Behave;
 use Exercise;
 
 describe 'the none junction', {
-  it 'is true when no number is negative', {
-    expect(none-negative([1, 2, 3])).to.be-truthy;
+  it 'returns True when no number is negative', {
+    expect(none-negative([1, 2, 3])).to.eq(True);
   }
 
-  it 'is false when some number is negative', {
-    expect(none-negative([1, -2, 3])).to.be-falsy;
+  it 'returns False when some number is negative', {
+    expect(none-negative([1, -2, 3])).to.eq(False);
   }
 }

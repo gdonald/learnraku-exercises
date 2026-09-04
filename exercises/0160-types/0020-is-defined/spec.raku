@@ -2,11 +2,11 @@ use BDD::Behave;
 use Exercise;
 
 describe 'defined and undefined', {
-  it 'is true for a concrete value', {
-    expect(is-defined(5)).to.be-truthy;
+  it 'returns True for a concrete value', {
+    expect(is-defined(5)).to.eq(True);
   }
 
-  it 'is false for an undefined value', {
-    expect(is-defined(Nil)).to.be-falsy;
+  it 'returns False for an undefined value', {
+    expect(is-defined(Nil)).to.eq(False);
   }
 }

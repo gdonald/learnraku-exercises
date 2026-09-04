@@ -2,17 +2,17 @@ use BDD::Behave;
 use Exercise;
 
 describe 'boolean coercion', {
-  it 'is true for a non-zero number and a non-empty string', {
+  it 'returns True for a non-zero number and a non-empty string', {
     aggregate-failures {
-      expect(truthy(5)).to.be-truthy;
-      expect(truthy('x')).to.be-truthy;
+      expect(truthy(5)).to.eq(True);
+      expect(truthy('x')).to.eq(True);
     }
   }
 
-  it 'is false for zero and the empty string', {
+  it 'returns False for zero and the empty string', {
     aggregate-failures {
-      expect(truthy(0)).to.be-falsy;
-      expect(truthy('')).to.be-falsy;
+      expect(truthy(0)).to.eq(False);
+      expect(truthy('')).to.eq(False);
     }
   }
 }

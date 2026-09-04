@@ -7,6 +7,6 @@ describe 'fail and unthrown failures', {
   }
 
   it 'returns an undefined failure for zero', {
-    expect(reciprocal(0).defined).to.be-falsy;
+    expect(reciprocal(0).defined).to.eq(False);
   }
 }

@@ -2,11 +2,11 @@ use BDD::Behave;
 use Exercise;
 
 describe 'divisibility', {
-  it 'is true when the number divides evenly', {
-    expect(is-divisible(10, 5)).to.be-truthy;
+  it 'returns True when the number divides evenly', {
+    expect(is-divisible(10, 5)).to.eq(True);
   }
 
-  it 'is false when there is a remainder', {
-    expect(is-divisible(10, 3)).to.be-falsy;
+  it 'returns False when there is a remainder', {
+    expect(is-divisible(10, 3)).to.eq(False);
   }
 }

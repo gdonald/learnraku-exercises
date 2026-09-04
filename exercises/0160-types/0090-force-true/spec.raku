@@ -6,8 +6,8 @@ describe 'mixing in with but', {
     my $forced = force-true(0);
 
     aggregate-failures {
-      expect($forced.Bool).to.be-truthy;
-      expect($forced == 0).to.be-truthy;
+      expect($forced.Bool).to.eq(True);
+      expect($forced == 0).to.eq(True);
     }
   }
 }

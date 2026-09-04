@@ -2,11 +2,11 @@ use BDD::Behave;
 use Exercise;
 
 describe 'the negation metaoperator', {
-  it 'is true when the strings differ', {
-    expect(differ('a', 'b')).to.be-truthy;
+  it 'returns True when the strings differ', {
+    expect(differ('a', 'b')).to.eq(True);
   }
 
-  it 'is false when the strings match', {
-    expect(differ('a', 'a')).to.be-falsy;
+  it 'returns False when the strings match', {
+    expect(differ('a', 'a')).to.eq(False);
   }
 }

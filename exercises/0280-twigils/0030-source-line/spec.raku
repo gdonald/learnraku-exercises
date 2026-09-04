@@ -2,10 +2,11 @@ use BDD::Behave;
 use Exercise;
 
 describe 'compile-time variables', {
-  it 'returns a positive line number', {
-    aggregate-failures {
-      expect(source-line() ~~ Int).to.be-truthy;
-      expect(source-line() > 0).to.be-truthy;
-    }
+  it 'returns an integer line number', {
+    expect(source-line()).to.be-an(Int);
+  }
+
+  it 'returns a line number inside the module', {
+    expect(source-line()).to.be-gt(0);
   }
 }

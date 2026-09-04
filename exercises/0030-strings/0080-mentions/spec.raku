@@ -2,11 +2,11 @@ use BDD::Behave;
 use Exercise;
 
 describe 'searching strings', {
-  it 'is true when the word is present', {
-    expect(mentions('hello world', 'world')).to.be-truthy;
+  it 'returns True when the word is present', {
+    expect(mentions('hello world', 'world')).to.eq(True);
   }
 
-  it 'is false when the word is absent', {
-    expect(mentions('hello world', 'xyz')).to.be-falsy;
+  it 'returns False when the word is absent', {
+    expect(mentions('hello world', 'xyz')).to.eq(False);
   }
 }

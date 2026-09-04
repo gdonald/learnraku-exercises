@@ -2,14 +2,19 @@ use BDD::Behave;
 use Exercise;
 
 describe 'logical operators', {
-  it 'is true for an adult citizen', {
-    expect(can-vote(20, True)).to.be-truthy;
+  it 'returns True for an adult citizen', {
+    expect(can-vote(20, True)).to.eq(True);
   }
 
-  it 'is false unless the person is both an adult and a citizen', {
-    aggregate-failures {
-      expect(can-vote(20, False)).to.be-falsy;
-      expect(can-vote(16, True)).to.be-falsy;
-    }
+  it 'returns False for an adult who is not a citizen', {
+    expect(can-vote(20, False)).to.eq(False);
+  }
+
+  it 'returns False for a citizen who is not an adult', {
+    expect(can-vote(16, True)).to.eq(False);
+  }
+
+  it 'returns False for a non-citizen who is not an adult', {
+    expect(can-vote(16, False)).to.eq(False);
   }
 }

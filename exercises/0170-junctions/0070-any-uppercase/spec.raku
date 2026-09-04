@@ -2,11 +2,11 @@ use BDD::Behave;
 use Exercise;
 
 describe 'autothreading', {
-  it 'is true when an uppercased word matches', {
-    expect(any-matches(['a', 'b', 'c'], 'B')).to.be-truthy;
+  it 'returns True when an uppercased word matches', {
+    expect(any-matches(['a', 'b', 'c'], 'B')).to.eq(True);
   }
 
-  it 'is false when none match', {
-    expect(any-matches(['a', 'b', 'c'], 'Z')).to.be-falsy;
+  it 'returns False when none match', {
+    expect(any-matches(['a', 'b', 'c'], 'Z')).to.eq(False);
   }
 }

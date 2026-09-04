@@ -6,7 +6,11 @@ describe 'defined-or', {
     expect(greeting-for('Ada')).to.eq('Hello, Ada');
   }
 
-  it 'falls back to a default when the name is missing', {
+  it 'greets an empty name, because an empty string is still defined', {
+    expect(greeting-for('')).to.eq('Hello, ');
+  }
+
+  it 'falls back to a default when the name is undefined', {
     expect(greeting-for(Nil)).to.eq('Hello, stranger');
   }
 }

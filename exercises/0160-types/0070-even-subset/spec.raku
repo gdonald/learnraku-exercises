@@ -2,15 +2,15 @@ use BDD::Behave;
 use Exercise;
 
 describe 'subset types', {
-  it 'is true for an even integer', {
-    expect(is-even-type(4)).to.be-truthy;
+  it 'returns True for an even integer', {
+    expect(is-even-type(4)).to.eq(True);
   }
 
-  it 'is false for an odd integer', {
-    expect(is-even-type(3)).to.be-falsy;
+  it 'returns False for an odd integer', {
+    expect(is-even-type(3)).to.eq(False);
   }
 
-  it 'is false for a non-integer', {
-    expect(is-even-type('x')).to.be-falsy;
+  it 'returns False for a non-integer', {
+    expect(is-even-type('x')).to.eq(False);
   }
 }

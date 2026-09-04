@@ -2,11 +2,11 @@ use BDD::Behave;
 use Exercise;
 
 describe 'matching with a regex', {
-  it 'is true when a digit is present', {
-    expect(has-digit('a1b')).to.be-truthy;
+  it 'returns True when a digit is present', {
+    expect(has-digit('a1b')).to.eq(True);
   }
 
-  it 'is false when no digit is present', {
-    expect(has-digit('abc')).to.be-falsy;
+  it 'returns False when no digit is present', {
+    expect(has-digit('abc')).to.eq(False);
   }
 }
